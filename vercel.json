@@ -1,0 +1,7 @@
+{
+    "functions": {
+        "api/export.js": {
+            "memory": 3008
+        }
+    }
+}

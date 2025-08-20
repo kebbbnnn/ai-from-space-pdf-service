@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sparticuz/chromium": "^138.0.2",
     "express": "^5.1.0",
-    "md-to-pdf": "^5.2.4"
+    "md-to-pdf": "^5.2.4",
+    "puppeteer": "^24.16.2"
   }
 }
