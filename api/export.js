@@ -1,6 +1,5 @@
 const { mdToPdf } = require('md-to-pdf');
 const chromium = require('@sparticuz/chromium');
-const puppeteer = require('puppeteer-core');
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -13,19 +12,19 @@ export default async function handler(req, res) {
             return res.status(400).send('Bad Request: Missing markdown content.');
         }
 
+        // THE DEFINITIVE FIX: Use the 'launch_options' key as required by the md-to-pdf library.
         const pdf = await mdToPdf(
             { content: markdown },
             {
-                puppeteer: {
+                launch_options: {
                     executablePath: await chromium.executablePath(),
                     args: chromium.args,
+                    headless: chromium.headless,
                 },
             }
         );
 
         if (pdf && pdf.content) {
-            // FIX: Use writeHead and end for explicit binary data transmission.
-            // This prevents the Buffer from being converted to JSON.
             res.writeHead(200, {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': 'attachment; filename=output.pdf',
@@ -38,7 +37,6 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Error generating PDF:', error);
-        // Ensure error responses are also clearly JSON
         res.setHeader('Content-Type', 'application/json');
         return res.status(500).json({
             error: 'Internal Server Error',
